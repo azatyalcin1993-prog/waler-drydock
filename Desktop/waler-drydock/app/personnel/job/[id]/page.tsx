@@ -221,7 +221,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
             <div className="space-y-3">
               {logs.map((log) => (
                 <div key={log.id} className="border-l-2 border-slate-600 pl-3">
-                  <p className="text-sm text-white">{log.note}</p>
+                  <p className="text-sm text-white">{log.content}</p>
                   <p className="text-xs text-slate-500 mt-0.5">
                     {log.profiles?.full_name ?? 'Bilinmeyen'} · {new Date(log.created_at).toLocaleString('tr-TR')}
                   </p>
