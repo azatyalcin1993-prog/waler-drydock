@@ -90,7 +90,7 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
         const { error: logError } = await supabase.from('job_logs').insert({
           job_id: id,
           user_id: user.id,
-          note: note.trim(),
+          content: note.trim(),
         })
 
         if (logError) {
