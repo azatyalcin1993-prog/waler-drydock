@@ -1,15 +1,8 @@
+import { JobPhotoGallery } from '@/components/job-photo-gallery'
+import { statusLabels, statusStyles } from '@/lib/constants'
 import { createClient } from '@/lib/supabase/server'
+import type { JobPhoto } from '@/lib/types'
 import { redirect } from 'next/navigation'
-
-const statusLabels: Record<string, string> = {
-  beklemede: 'Beklemede', devam_ediyor: 'Devam Ediyor', tamamlandi: 'Tamamlandı', gecikti: 'Gecikti',
-}
-const statusStyles: Record<string, string> = {
-  beklemede: 'bg-slate-700 text-slate-300',
-  devam_ediyor: 'bg-blue-900/60 text-blue-300',
-  tamamlandi: 'bg-emerald-900/60 text-emerald-300',
-  gecikti: 'bg-amber-900/60 text-amber-300',
-}
 
 export default async function InspectorJobDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -52,18 +45,7 @@ export default async function InspectorJobDetail({ params }: { params: Promise<{
             </div>
           </div>
         </div>
-        {photos && photos.length > 0 && (
-          <div className="bg-slate-800 rounded-xl border border-slate-700 p-4">
-            <h2 className="text-sm font-semibold text-slate-300 mb-3">Fotoğraflar ({photos.length})</h2>
-            <div className="grid grid-cols-3 gap-2">
-              {photos.map((photo: any) => (
-                <a key={photo.id} href={photo.url} target="_blank" rel="noreferrer">
-                  <img src={photo.url} alt="İş fotoğrafı" className="w-full h-24 object-cover rounded-lg border border-slate-600 hover:border-blue-500 transition" />
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
+        <JobPhotoGallery photos={(photos ?? []) as JobPhoto[]} />
         {logs && logs.length > 0 && (
           <div className="bg-slate-800 rounded-xl border border-slate-700 p-4">
             <h2 className="text-sm font-semibold text-slate-300 mb-3">Güncelleme Geçmişi ({logs.length})</h2>
