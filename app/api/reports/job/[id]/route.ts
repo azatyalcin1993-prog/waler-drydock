@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import PDFDocument from 'pdfkit'
+import path from 'path'
 
 export const runtime = 'nodejs'
 
@@ -43,6 +44,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   // PDF oluştur
   const doc = new PDFDocument({ size: 'A4', margin: 50 })
+  // Fix font path for Windows
+  const fontDir = path.join(process.cwd(), 'node_modules', 'pdfkit', 'js', 'data')
+  ;(doc as any).fontDirectory = fontDir
   const chunks: Buffer[] = []
   doc.on('data', (chunk: Buffer) => chunks.push(chunk))
   doc.on('end', () => {})

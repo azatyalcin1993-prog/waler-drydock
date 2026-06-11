@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { HealthDashboard } from '@/components/health-dashboard'
 
 const statusLabels: Record<string, string> = {
   beklemede: 'Beklemede',
@@ -122,6 +123,14 @@ export default async function InspectorDashboard() {
             </a>
           </div>
         </div>
+
+        {/* Proje Sağlık Paneli */}
+        {jobs && jobs.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">🏥 Proje Sağlık Paneli</h2>
+            <HealthDashboard jobs={jobs.map((j: any) => ({ id: j.id, section: j.section, status: j.status, progress: j.progress ?? 0, ships: j.ships }))} />
+          </div>
+        )}
 
         {/* İş Kartları */}
         {!jobs || jobs.length === 0 ? (

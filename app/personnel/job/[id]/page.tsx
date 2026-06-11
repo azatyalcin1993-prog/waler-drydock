@@ -3,7 +3,8 @@ import { redirect } from 'next/navigation'
 import { JobPhotoGallery } from '@/components/job-photo-gallery'
 import { createClient } from '@/lib/supabase/server'
 import type { Job, JobLog, JobPhoto } from '@/lib/types'
-import { JobUpdateForm } from './job-update-form'
+import { ProgressUpdateForm } from '@/components/progress-update-form'
+import { VariationOrderForm } from '@/components/variation-order-form'
 
 export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -64,9 +65,11 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           </div>
         )}
 
-        <JobUpdateForm job={typedJob} />
+        <ProgressUpdateForm jobId={typedJob.id} currentProgress={typedJob.progress ?? 0} />
 
         <JobPhotoGallery photos={typedPhotos} />
+
+        <VariationOrderForm jobId={typedJob.id} />
 
         {typedLogs.length > 0 && (
           <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">

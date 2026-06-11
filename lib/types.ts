@@ -59,3 +59,31 @@ export interface PersonnelJob {
   logSayisi: number
   fotoSayisi: number
 }
+
+export interface JobUpdate {
+  id: string
+  job_id: string
+  user_id: string
+  progress: number
+  note: string | null
+  created_at: string
+  profiles?: { full_name: string } | null
+}
+
+export type VariationOrderStatus = 'pending' | 'approved' | 'rejected'
+
+export interface VariationOrder {
+  id: string
+  job_id: string
+  title: string
+  description: string | null
+  estimated_cost: number | null
+  estimated_hours: number | null
+  status: VariationOrderStatus
+  requested_by: string | null
+  approved_by: string | null
+  created_at: string
+  updated_at: string
+  profiles?: { full_name: string } | null
+  approver?: { full_name: string } | null
+}
