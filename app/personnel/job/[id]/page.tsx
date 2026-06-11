@@ -43,10 +43,17 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
     <div className="min-h-screen bg-slate-900 text-white">
       <header className="bg-slate-800 border-b border-slate-700 px-5 py-4 flex items-center gap-3">
         <Link href="/personnel" className="text-slate-400 hover:text-white transition text-lg">←</Link>
-        <div>
+        <div className="flex-1">
           <h1 className="font-bold">{typedJob.section}</h1>
           <p className="text-xs text-slate-400">{typedJob.ships?.name} · {typedJob.job_no}</p>
         </div>
+        <a
+          href={`/api/reports/job/${typedJob.id}`}
+          target="_blank"
+          className="bg-amber-600 hover:bg-amber-700 px-3 py-2 rounded-lg text-xs font-semibold transition"
+        >
+          📄 PDF Rapor
+        </a>
       </header>
 
       <main className="p-5 max-w-lg mx-auto space-y-5">

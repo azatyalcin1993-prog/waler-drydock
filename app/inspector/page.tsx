@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -105,12 +106,21 @@ export default async function InspectorDashboard() {
         {/* İş Listesi Header */}
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Tüm İşler</h2>
-          <a
-            href="/inspector/add-job"
-            className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-1"
-          >
-            + Yeni İş
-          </a>
+          <div className="flex gap-2">
+            <a
+              href="/api/reports/all"
+              className="bg-amber-600 hover:bg-amber-700 px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1"
+              target="_blank"
+            >
+              📄 Tüm Rapor
+            </a>
+            <a
+              href="/inspector/add-job"
+              className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-1"
+            >
+              + Yeni İş
+            </a>
+          </div>
         </div>
 
         {/* İş Kartları */}
@@ -128,7 +138,7 @@ export default async function InspectorDashboard() {
               <div key={job.id} className="bg-slate-800 rounded-xl border border-slate-700 p-4 hover:border-slate-500 transition">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1 mr-2">
-                    <h3 className="font-semibold text-white leading-tight">{job.section}</h3>
+                    <Link href={`/inspector/job/${job.id}`} className="font-semibold text-white leading-tight hover:text-blue-400 transition">{job.section}</Link>
                     <p className="text-xs text-slate-400 mt-0.5">{job.ships?.name ?? '—'} · {job.job_no}</p>
                   </div>
                   <span className={`text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1.5 shrink-0 ${statusStyles[job.status]}`}>
