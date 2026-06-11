@@ -59,7 +59,6 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
           <p className="text-xs text-slate-400">{job.ships?.name} · {job.job_no}</p>
         </div>
       </header>
-
       <main className="p-5 max-w-lg mx-auto space-y-5">
         {job.description && (
           <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
@@ -67,10 +66,8 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
             <p className="text-sm text-white">{job.description}</p>
           </div>
         )}
-
         <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 space-y-4">
           <h2 className="font-semibold text-sm text-slate-300">Güncelleme Yap</h2>
-
           <div>
             <label className="text-xs text-slate-400 block mb-2">Durum</label>
             <div className="grid grid-cols-2 gap-2">
@@ -82,7 +79,6 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
               ))}
             </div>
           </div>
-
           <div>
             <label className="text-xs text-slate-400 block mb-2">İlerleme: <span className="text-white font-semibold">{progress}%</span></label>
             <input type="range" min={0} max={100} step={5} value={progress} onChange={(e) => setProgress(Number(e.target.value))} className="w-full accent-blue-500" />
@@ -90,13 +86,11 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
               <div className="bg-blue-500 h-1.5 rounded-full transition-all" style={{ width: `${progress}%` }} />
             </div>
           </div>
-
           <div>
             <label className="text-xs text-slate-400 block mb-2">Not Ekle (opsiyonel)</label>
             <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ne yaptığınızı kısaca açıklayın..." rows={3}
               className="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none" />
           </div>
-
           <div className="flex gap-2">
             <button onClick={handleUpdate} disabled={saving}
               className="flex-1 bg-blue-600 hover:bg-blue-700 py-2.5 rounded-lg font-semibold transition disabled:opacity-50">
@@ -108,7 +102,6 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
             </a>
           </div>
         </div>
-
         {logs.length > 0 && (
           <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
             <h2 className="font-semibold text-sm text-slate-300 mb-3">Güncelleme Geçmişi</h2>
