@@ -1,23 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { SWRegister } from "@/components/sw-register";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Waler Dry Dock — Tersane İş Takip",
-  description: "Dry dock tersane iş takip sistemi MVP",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Waler Dry Dock",
-  },
+  title: "Waler Drydock",
+  description: "Dry dock project management for technical vessel operators",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#0f172a",
 };
 
 export default function RootLayout({
@@ -26,16 +23,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="tr"
-      className="h-full antialiased"
-    >
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </head>
-      <body className="min-h-full flex flex-col font-sans">
-        <SWRegister />
-        {children}
+    <html lang="en" className={cn("h-full antialiased", geist.variable)}>
+      <body className="min-h-full flex flex-col">
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );
