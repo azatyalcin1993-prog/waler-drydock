@@ -18,7 +18,7 @@ export const createClient = async () => {
               cookieStore.set(name, value, options)
             )
           } catch {
-            // Sunucu bileşeninden (Server Component) cookie set edilirse hata vermemesi için
+            // Cookies can only be written from Server Actions, Route Handlers, or Middleware.
           }
         },
       },
