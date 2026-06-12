@@ -19,7 +19,7 @@ export default function DailyReportFormModal({ projectId, report, onSave, onClos
   const [form, setForm] = useState({
     project_id: projectId,
     report_date: report?.report_date || new Date().toISOString().split('T')[0],
-    weather: report?.weather || 'Sunny',
+    weather: report?.weather || 'Sunny' as WeatherCondition,
     temperature: report?.temperature || '',
     crew_count: report?.crew_count || 0,
     contractor_count: report?.contractor_count || 0,
@@ -157,7 +157,7 @@ export default function DailyReportFormModal({ projectId, report, onSave, onClos
               <label className="text-xs font-medium text-slate-300 block mb-2">Weather</label>
               <select
                 value={form.weather}
-                onChange={(e) => setForm({ ...form, weather: e.target.value })}
+                onChange={(e) => setForm({ ...form, weather: e.target.value as WeatherCondition })}
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-blue-500 outline-none transition"
               >
                 {WEATHERS.map((w) => <option key={w}>{w}</option>)}

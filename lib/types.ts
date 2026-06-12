@@ -85,6 +85,34 @@ export interface JobUpdate {
   profiles?: { full_name: string } | null
 }
 
+// Defect Types
+export type DefectSeverity = 'Low' | 'Medium' | 'High' | 'Critical'
+export type DefectStatus = 'Open' | 'In Progress' | 'Closed' | 'Deferred'
+export type DefectLocation = 'Deck' | 'Engine Room' | 'Hull' | 'Propeller' | 'Rudder' | 'Valves' | 'Piping' | 'Electrical' | 'Other'
+
+export interface Defect {
+  id: string
+  work_order_id?: string | null
+  project_id: string
+  title: string
+  description?: string | null
+  location: DefectLocation
+  severity: DefectSeverity
+  status: DefectStatus
+  photo_before_url?: string | null
+  photo_after_url?: string | null
+  reported_by?: string | null
+  assigned_to?: string | null
+  created_at: string
+  updated_at: string
+  closed_at?: string | null
+}
+
+export interface DefectWithRelations extends Defect {
+  profiles_reporter?: { id: string; full_name: string } | null
+  profiles_assigned?: { id: string; full_name: string } | null
+}
+
 // Daily Report Types
 export type WeatherCondition = 'Sunny' | 'Cloudy' | 'Rainy' | 'Stormy' | 'Windy' | 'Foggy'
 

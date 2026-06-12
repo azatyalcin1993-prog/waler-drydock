@@ -176,8 +176,8 @@ export default function DefectFormModal({ projectId, defect, onSave, onClose }: 
           <DefectPhotoUpload
             photoBefore={form.photo_before_url}
             photoAfter={form.photo_after_url}
-            onPhotoBeforeChange={(url) => setForm({ ...form, photo_before_url: url })}
-            onPhotoAfterChange={(url) => setForm({ ...form, photo_after_url: url })}
+            onPhotoBeforeChange={(url) => setForm({ ...form, photo_before_url: url || '' })}
+            onPhotoAfterChange={(url) => setForm({ ...form, photo_after_url: url || '' })}
           />
 
           {/* Actions */}
