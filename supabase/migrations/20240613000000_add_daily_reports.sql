@@ -1,9 +1,9 @@
 -- Add Daily Reports Table for Project Daily Progress Tracking
 -- Stores daily updates including weather, manpower, completed works, safety incidents
 
-create table daily_reports (
+create table if not exists daily_reports (
   id                uuid primary key default gen_random_uuid(),
-  project_id        uuid references projects(id) on delete cascade not null,
+  project_id        uuid not null,
   report_date       date not null,
 
   -- Weather & Environment
@@ -26,7 +26,7 @@ create table daily_reports (
   notes             text,
 
   -- Creator
-  created_by        uuid references auth.users(id),
+  created_by        uuid,
   created_at        timestamptz default now(),
   updated_at        timestamptz default now(),
 
@@ -34,22 +34,15 @@ create table daily_reports (
   unique(project_id, report_date)
 );
 
--- Add RLS policies for daily_reports
+-- Add RLS
 alter table daily_reports enable row level security;
 
-create policy "Users see own org daily reports"
+create policy "Enable all for authenticated users"
   on daily_reports for all
-  using (
-    project_id in (
-      select id from projects where organization_id = my_org_id()
-    )
-  );
+  using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');
 
--- Add indexes for faster queries
-create index idx_daily_reports_project_id on daily_reports(project_id);
-create index idx_daily_reports_report_date on daily_reports(report_date);
-create index idx_daily_reports_project_date on daily_reports(project_id, report_date);
-
--- Auto update trigger for daily_reports
-create trigger set_daily_reports_updated_at before update on daily_reports
-  for each row execute function update_updated_at();
+-- Indexes
+create index if not exists idx_daily_reports_project_id on daily_reports(project_id);
+create index if not exists idx_daily_reports_report_date on daily_reports(report_date);
+create index if not exists idx_daily_reports_project_date on daily_reports(project_id, report_date);
