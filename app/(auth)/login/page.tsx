@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
+    const { error: authError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     });
@@ -31,11 +31,6 @@ export default function LoginPage() {
       return;
     }
 
-    // Ensure session is fully set before redirect
-    if (data?.session) {
-      await supabase.auth.setSession(data.session);
-    }
-    
     window.location.href = "/";
   };
 
