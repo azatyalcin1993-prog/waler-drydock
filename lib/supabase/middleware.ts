@@ -23,7 +23,23 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  // IMPORTANT: Do NOT run getUser() before setting cookies
+  // Just get the session to refresh the cookie
+  const { data: { session } } = await supabase.auth.getSession()
+
+  // If on login page and session exists, redirect to dashboard
+  if (request.nextUrl.pathname === '/login' && session) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return NextResponse.redirect(url)
+  }
+
+  // If on dashboard page and no session, redirect to login
+  if (!session && request.nextUrl.pathname !== '/login' && !request.nextUrl.pathname.startsWith('/_next') && !request.nextUrl.pathname.startsWith('/api')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
 
   return supabaseResponse
 }
