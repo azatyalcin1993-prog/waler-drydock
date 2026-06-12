@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import type { JobPhoto } from '@/lib/types'
 
 export interface JobPhotoGalleryProps {

@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local duplicated project snapshots should not be linted with the main app.
+    "Desktop/**",
+    "waler-drydock/**",
   ]),
 ]);
 

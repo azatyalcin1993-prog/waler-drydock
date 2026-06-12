@@ -1,6 +1,6 @@
 export type JobStatus = 'beklemede' | 'devam_ediyor' | 'tamamlandi' | 'gecikti'
 
-export type UserRole = 'personnel' | 'inspector'
+export type UserRole = 'personnel' | 'inspector' | 'captain' | 'chief_officer' | 'chief_engineer' | 'second_engineer' | 'eto'
 
 export interface JobPhoto {
   id: string
@@ -33,6 +33,21 @@ export interface Job {
   progress: number
   created_at: string
   updated_at: string
+  ships?: { name: string } | null
+  profiles?: { full_name: string } | null
+}
+
+export interface ShipOption {
+  id: string
+  name: string
+}
+
+export interface PersonnelOption {
+  id: string
+  full_name: string
+}
+
+export interface JobWithRelations extends Job {
   ships?: { name: string } | null
   profiles?: { full_name: string } | null
 }

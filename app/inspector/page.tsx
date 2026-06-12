@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { HealthDashboard } from '@/components/health-dashboard'
+import type { JobWithRelations } from '@/lib/types'
 
 const statusLabels: Record<string, string> = {
   beklemede: 'Beklemede',
@@ -42,16 +43,18 @@ export default async function InspectorDashboard() {
     .select(`*, ships(name), profiles(full_name)`)
     .order('created_at', { ascending: false })
 
+  const typedJobs = (jobs ?? []) as JobWithRelations[]
+
   const stats = {
-    toplam: jobs?.length ?? 0,
-    beklemede: jobs?.filter(j => j.status === 'beklemede').length ?? 0,
-    devam: jobs?.filter(j => j.status === 'devam_ediyor').length ?? 0,
-    tamamlandi: jobs?.filter(j => j.status === 'tamamlandi').length ?? 0,
-    gecikti: jobs?.filter(j => j.status === 'gecikti').length ?? 0,
+    toplam: typedJobs.length,
+    beklemede: typedJobs.filter((j) => j.status === 'beklemede').length,
+    devam: typedJobs.filter((j) => j.status === 'devam_ediyor').length,
+    tamamlandi: typedJobs.filter((j) => j.status === 'tamamlandi').length,
+    gecikti: typedJobs.filter((j) => j.status === 'gecikti').length,
   }
 
-  const avgProgress = jobs && jobs.length > 0
-    ? Math.round(jobs.reduce((acc, j) => acc + (j.progress ?? 0), 0) / jobs.length)
+  const avgProgress = typedJobs.length > 0
+    ? Math.round(typedJobs.reduce((acc, j) => acc + (j.progress ?? 0), 0) / typedJobs.length)
     : 0
 
   if (error) return <div className="p-10 text-red-500">Hata: {error.message}</div>
@@ -125,15 +128,15 @@ export default async function InspectorDashboard() {
         </div>
 
         {/* Proje Sağlık Paneli */}
-        {jobs && jobs.length > 0 && (
+        {typedJobs.length > 0 && (
           <div className="mb-6">
             <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">🏥 Proje Sağlık Paneli</h2>
-            <HealthDashboard jobs={jobs.map((j: any) => ({ id: j.id, section: j.section, status: j.status, progress: j.progress ?? 0, ships: j.ships }))} />
+            <HealthDashboard jobs={typedJobs.map((j) => ({ id: j.id, section: j.section, status: j.status, progress: j.progress ?? 0, ships: j.ships }))} />
           </div>
         )}
 
         {/* İş Kartları */}
-        {!jobs || jobs.length === 0 ? (
+        {typedJobs.length === 0 ? (
           <div className="text-center py-16 text-slate-500">
             <p className="text-4xl mb-3">⚓</p>
             <p>Henüz hiç iş oluşturulmamış.</p>
@@ -143,7 +146,7 @@ export default async function InspectorDashboard() {
           </div>
         ) : (
           <div className="grid gap-3 md:grid-cols-2">
-            {jobs.map((job: any) => (
+            {typedJobs.map((job) => (
               <div key={job.id} className="bg-slate-800 rounded-xl border border-slate-700 p-4 hover:border-slate-500 transition">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1 mr-2">

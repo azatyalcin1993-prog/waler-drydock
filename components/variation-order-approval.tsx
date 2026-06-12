@@ -3,25 +3,13 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-
-interface VariationOrder {
-  id: string
-  title: string
-  description: string | null
-  estimated_cost: number | null
-  estimated_hours: number | null
-  status: string
-  requested_by: string | null
-  created_at: string
-  profiles?: { full_name: string } | null
-}
+import type { VariationOrder } from '@/lib/types'
 
 interface VariationOrderApprovalProps {
   orders: VariationOrder[]
-  jobId: string
 }
 
-export function VariationOrderApproval({ orders, jobId }: VariationOrderApprovalProps) {
+export function VariationOrderApproval({ orders }: VariationOrderApprovalProps) {
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const supabase = createClient()

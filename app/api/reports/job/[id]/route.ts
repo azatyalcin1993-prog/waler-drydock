@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import PDFDocument from 'pdfkit'
-import path from 'path'
+import type { JobLog, JobPhoto, JobWithRelations } from '@/lib/types'
 
 export const runtime = 'nodejs'
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
 
@@ -13,13 +13,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // İş detayı
-  const { data: job } = await supabase
+  const { data: jobData } = await supabase
     .from('jobs')
     .select('*, ships(name), profiles(full_name)')
     .eq('id', id)
     .single()
 
-  if (!job) return NextResponse.json({ error: 'Job not found' }, { status: 404 })
+  if (!jobData) return NextResponse.json({ error: 'Job not found' }, { status: 404 })
+
+  const job = jobData as JobWithRelations
 
   // Fotoğraflar
   const { data: photos } = await supabase
@@ -44,12 +46,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   // PDF oluştur
   const doc = new PDFDocument({ size: 'A4', margin: 50 })
-  // Fix font path for Windows
-  const fontDir = path.join(process.cwd(), 'node_modules', 'pdfkit', 'js', 'data')
-  ;(doc as any).fontDirectory = fontDir
   const chunks: Buffer[] = []
-  doc.on('data', (chunk: Buffer) => chunks.push(chunk))
-  doc.on('end', () => {})
+  const pdfReady = new Promise<Buffer>((resolve, reject) => {
+    doc.on('data', (chunk: Buffer) => chunks.push(chunk))
+    doc.on('end', () => resolve(Buffer.concat(chunks)))
+    doc.on('error', reject)
+  })
 
   // Başlık
   doc.fontSize(20).font('Helvetica-Bold').text('WALER DRY DOCK', { align: 'center' })
@@ -71,7 +73,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   row('İş No', job.job_no)
   row('Bölüm / Konum', job.section)
-  row('Açıklama', job.description)
+  row('Açıklama', job.description || '-')
   row('Gemi', job.ships?.name || '-')
   row('Durum', statusLabels[job.status] || job.status)
   row('İlerleme', `${job.progress ?? 0}%`)
@@ -89,7 +91,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     doc.fontSize(14).font('Helvetica-Bold').text('FOTOĞRAFLAR')
     doc.moveDown(0.5)
     doc.fontSize(10).font('Helvetica')
-    photos.forEach((photo: any) => {
+    ;(photos as JobPhoto[]).forEach((photo) => {
       doc.text(`📷 ${photo.file_name} - ${new Date(photo.created_at).toLocaleDateString('tr-TR')}`, { indent: 15 })
     })
     doc.moveDown()
@@ -102,7 +104,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     doc.fontSize(14).font('Helvetica-Bold').text('İŞLEM GEÇMİŞİ')
     doc.moveDown(0.5)
     doc.fontSize(10).font('Helvetica')
-    logs.forEach((log: any) => {
+    ;(logs as JobLog[]).forEach((log) => {
       const name = log.profiles?.full_name || 'Bilinmeyen'
       const date = new Date(log.created_at).toLocaleString('tr-TR')
       doc.text(`[${date}] ${name}: ${log.content}`, { indent: 15 })
@@ -116,8 +118,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   doc.end()
 
-  const pdfBuffer = Buffer.concat(chunks)
-  return new NextResponse(pdfBuffer, {
+  const pdfBuffer = await pdfReady
+  return new NextResponse(new Uint8Array(pdfBuffer), {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="is_raporu_${job.job_no || id}.pdf"`,

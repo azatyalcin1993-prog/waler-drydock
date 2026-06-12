@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import type { JobWithRelations } from '@/lib/types'
 
 const statusLabels: Record<string, string> = {
   beklemede: 'Beklemede',
@@ -43,11 +44,13 @@ export default async function PersonnelDashboard() {
     .eq('responsible_id', user.id)
     .order('created_at', { ascending: false })
 
+  const typedJobs = (jobs ?? []) as JobWithRelations[]
+
   const stats = {
-    toplam: jobs?.length ?? 0,
-    devam: jobs?.filter(j => j.status === 'devam_ediyor').length ?? 0,
-    tamamlandi: jobs?.filter(j => j.status === 'tamamlandi').length ?? 0,
-    gecikti: jobs?.filter(j => j.status === 'gecikti').length ?? 0,
+    toplam: typedJobs.length,
+    devam: typedJobs.filter((j) => j.status === 'devam_ediyor').length,
+    tamamlandi: typedJobs.filter((j) => j.status === 'tamamlandi').length,
+    gecikti: typedJobs.filter((j) => j.status === 'gecikti').length,
   }
 
   return (
@@ -101,14 +104,14 @@ export default async function PersonnelDashboard() {
         {/* İş Listesi */}
         <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Bana Atanan İşler</h2>
 
-        {!jobs || jobs.length === 0 ? (
+        {typedJobs.length === 0 ? (
           <div className="text-center py-16 text-slate-500">
             <p className="text-4xl mb-3">🔧</p>
             <p>Henüz atanmış bir iş yok.</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {jobs.map((job: any) => (
+            {typedJobs.map((job) => (
               <div key={job.id} className="bg-slate-800 rounded-xl border border-slate-700 p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div>

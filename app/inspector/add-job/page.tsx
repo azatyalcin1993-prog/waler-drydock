@@ -2,16 +2,17 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import type { PersonnelOption, ShipOption } from '@/lib/types'
 
 export default function AddJobPage() {
   const [loading, setLoading] = useState(false)
-  const [personnel, setPersonnel] = useState<any[]>([])
-  const [ships, setShips] = useState<any[]>([])
+  const [personnel, setPersonnel] = useState<PersonnelOption[]>([])
+  const [ships, setShips] = useState<ShipOption[]>([])
   const [error, setError] = useState<string | null>(null)
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
   const router = useRouter()
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function AddJobPage() {
       setShips(s ?? [])
     }
     load()
-  }, [])
+  }, [supabase])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -83,7 +84,7 @@ export default function AddJobPage() {
                 className="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
               >
                 <option value="">Gemi seçin...</option>
-                {ships.map(s => (
+                {ships.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
@@ -141,7 +142,7 @@ export default function AddJobPage() {
                 className="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
               >
                 <option value="">Personel seçin...</option>
-                {personnel.map(p => (
+                {personnel.map((p) => (
                   <option key={p.id} value={p.id}>{p.full_name}</option>
                 ))}
               </select>
