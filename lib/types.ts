@@ -85,6 +85,35 @@ export interface JobUpdate {
   profiles?: { full_name: string } | null
 }
 
+// Daily Report Types
+export type WeatherCondition = 'Sunny' | 'Cloudy' | 'Rainy' | 'Stormy' | 'Windy' | 'Foggy'
+
+export interface DailyReport {
+  id: string
+  project_id: string
+  report_date: string
+  weather: WeatherCondition | null
+  temperature: string | null
+  crew_count: number
+  contractor_count: number
+  completed_works: string
+  delay_reasons: string | null
+  safety_incidents: string | null
+  photos: string[]
+  notes: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface DailyReportStats {
+  totalReports: number
+  totalManpower: number
+  safetyIncidents: number
+  avgCrew: number
+  avgContractors: number
+}
+
 export type VariationOrderStatus = 'pending' | 'approved' | 'rejected'
 
 export interface VariationOrder {

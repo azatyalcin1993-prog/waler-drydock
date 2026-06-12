@@ -32,6 +32,8 @@ import {
   ClipboardList,
   FileText,
   TrendingUp,
+  AlertTriangle,
+  Sun,
 } from "lucide-react";
 import type { Project, WorkOrder, Tender, Report, Vessel } from "@/types/database";
 
@@ -215,10 +217,18 @@ export default function ProjectDetailPage() {
       </div>
 
       <Tabs defaultValue="work-orders">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="work-orders">
             <ClipboardList className="h-4 w-4 mr-1" />
             Work Orders
+          </TabsTrigger>
+          <TabsTrigger value="defects">
+            <AlertTriangle className="h-4 w-4 mr-1" />
+            Defects
+          </TabsTrigger>
+          <TabsTrigger value="daily-reports">
+            <Sun className="h-4 w-4 mr-1" />
+            Daily Reports
           </TabsTrigger>
           <TabsTrigger value="tenders">
             <FileText className="h-4 w-4 mr-1" />
@@ -337,6 +347,38 @@ export default function ProjectDetailPage() {
               </div>
             </DialogContent>
           </Dialog>
+        </TabsContent>
+
+        <TabsContent value="defects" className="space-y-4">
+          <div className="flex justify-end">
+            <Button size="sm" onClick={() => router.push(`/projects/${projectId}/defects`)}>
+              <AlertTriangle className="h-4 w-4 mr-1" />
+              View All Defects
+            </Button>
+          </div>
+          <div className="text-center py-12 text-muted-custom">
+            <AlertTriangle className="h-12 w-12 mx-auto mb-3 opacity-20" />
+            <p className="text-sm">Defect tracking module</p>
+            <p className="text-xs mt-1">
+              View and manage all discovered defects with before/after photos
+            </p>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="daily-reports" className="space-y-4">
+          <div className="flex justify-end">
+            <Button size="sm" onClick={() => router.push(`/projects/${projectId}/daily-reports`)}>
+              <Sun className="h-4 w-4 mr-1" />
+              View All Daily Reports
+            </Button>
+          </div>
+          <div className="text-center py-12 text-muted-custom">
+            <Sun className="h-12 w-12 mx-auto mb-3 opacity-20" />
+            <p className="text-sm">Daily progress reports</p>
+            <p className="text-xs mt-1">
+              Track daily progress, manpower, weather, and safety incidents
+            </p>
+          </div>
         </TabsContent>
 
         <TabsContent value="tenders" className="space-y-4">
