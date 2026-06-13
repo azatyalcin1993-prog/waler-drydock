@@ -38,7 +38,6 @@ export default function RegisterPage() {
       await supabase.from("profiles").upsert({
         id: data.user.id,
         full_name: fullName,
-        role: "VIEWER",
       });
     }
 
